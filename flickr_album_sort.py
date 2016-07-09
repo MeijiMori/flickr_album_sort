@@ -258,12 +258,11 @@ class albums(baseinfo):
 		photo_tags = elem.find(".//tags")
 		tagstr = ''
 		for pt in photo_tags:
-			#print pt
 			tags = pt.itertext()
 			for t in tags:
 				tagstr += t
-				#print tagstr
-				return tagstr
+
+		return tagstr
 
 	def sort_album_exe(self, photoset_ids):
 		#print "album_id list {0}".format(photoset_ids)
