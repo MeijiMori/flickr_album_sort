@@ -285,22 +285,25 @@ class albums(baseinfo):
 		def print_info(self):
 			print self
 
-def sort_album(list_album, way):
+def sort_album(list_album, way, ad):
 
 	#id,title,update_date,create_date,views,tag
 
 	if way == "tag":
-		sorted_list = sorted(list_album, key=lambda album: album["album_tag"])
+		sorted_list = sorted(list_album, key=lambda album: album["album_tag"], reverse=ad)
 	elif way == "id":
-		sorted_list = sorted(list_album, key=lambda album: album["album_idx"])
+		sorted_list = sorted(list_album, key=lambda album: album["album_idx"], reverse=ad)
 	elif way == "title":
-		sorted_list = sorted(list_album, key=lambda album: album["album_title"])
+		sorted_list = sorted(list_album, key=lambda album: album["album_title"],
+                reverse=ad)
 	elif way == "view_count":
-		sorted_list = sorted(list_album, key=lambda album: album["view_count"])
+		sorted_list = sorted(list_album, key=lambda album: album["view_count"], reverse=ad)
 	elif way == "update_date":
-		sorted_list = sorted(list_album, key=lambda album: album["update_date"])
+		sorted_list = sorted(list_album, key=lambda album: album["update_date"],
+                reverse=ad)
 	elif way == "create_date":
-		sorted_list = sorted(list_album, key=lambda album: album["create_date"])
+		sorted_list = sorted(list_album, key=lambda album: album["create_date"],
+                reverse=ad)
 	else:
 		print "No Way"
 
@@ -335,7 +338,7 @@ if __name__ == '__main__' :
 	my_albums.print_albums_info()
 
 	photo_list = []
-	LOADING_CHAR = [ ".", "o", "O", "0" ]
+	LOADING_CHAR = [ "    ", ".", ".o", ".oO", ".oO0" ]
 	loading_i = 0
 	for album_id in my_albums.album_list:
 		my_albums.get_album_info(album_id)
@@ -386,17 +389,18 @@ if __name__ == '__main__' :
 		#	'create_date' : create_date,
 		#	})
 
-		sys.stdout.write("\r[{0:d}]{1} {2}".format(loading_i, "...", LOADING_CHAR[loading_i % 4]))
+		sys.stdout.write("\r[{0:d}]{1} {2}".format(loading_i, "...",
+            LOADING_CHAR[loading_i % len(LOADING_CHAR)]))
 		sys.stdout.flush()
 		loading_i += 1
 
 	print ""
-	lst = sort_album(photo_list, "tag")
-	#lst = sort_album(photo_list, "id")
-	#lst = sort_album(photo_list, "title")
-	#lst = sort_album(photo_list, "view_count")
-	#lst = sort_album(photo_list, "update_date")
-	#lst = sort_album(photo_list, "create_date")
+	lst = sort_album(photo_list, "tag", True)
+	#lst = sort_album(photo_list, "id", False)
+	#lst = sort_album(photo_list, "title", False)
+	#lst = sort_album(photo_list, "view_count", False)
+	#lst = sort_album(photo_list, "update_date", False)
+	#lst = sort_album(photo_list, "create_date", False)
 	sort_ids = ',' . join([str(l) for l in lst])
 	#sort_ids = ""
 	#for l in lst:
