@@ -340,7 +340,18 @@ if __name__ == '__main__' :
 	photo_list = []
 	LOADING_CHAR = [ "    ", ".", ".o", ".oO", ".oO0" ]
 	loading_i = 0
+	#pdb.set_trace()
 	for album_id in my_albums.album_list:
+		sys.stdout.write("\r[{0:d}]{1} {2}".format(loading_i, "...",
+            LOADING_CHAR[loading_i % len(LOADING_CHAR)]))
+		sys.stdout.flush()
+		ignore_flag = False
+		for ignore_id in MI.IGNORE_SORT_ALBUM_LIST:
+			if album_id == ignore_id:
+				ignore_flag = True
+				break
+		if ignore_flag == True:
+			continue
 		my_albums.get_album_info(album_id)
 		#my_albums.print_album_info(album_id)
 		#my_albums.get_photos_list(album_id)
@@ -389,9 +400,6 @@ if __name__ == '__main__' :
 		#	'create_date' : create_date,
 		#	})
 
-		sys.stdout.write("\r[{0:d}]{1} {2}".format(loading_i, "...",
-            LOADING_CHAR[loading_i % len(LOADING_CHAR)]))
-		sys.stdout.flush()
 		loading_i += 1
 
 	print ""
@@ -401,7 +409,13 @@ if __name__ == '__main__' :
 	#lst = sort_album(photo_list, "view_count", False)
 	#lst = sort_album(photo_list, "update_date", False)
 	#lst = sort_album(photo_list, "create_date", False)
-	sort_ids = ',' . join([str(l) for l in lst])
+
+	# copy
+	ignores = MI.IGNORE_SORT_ALBUM_LIST[:]
+	# mix album list
+	mix_album_list = ignores + lst
+
+	sort_ids = ',' . join([str(m) for m in mix_album_list])
 	#sort_ids = ""
 	#for l in lst:
 	#    sort_ids += l
