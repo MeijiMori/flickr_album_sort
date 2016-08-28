@@ -197,16 +197,16 @@ class albums(baseinfo):
 
             def print_album_info(self, album_id):
                 print u"title : {0}".format(self.photoset[album_id]["title"])
-        print u"description : {0}".format(self.photoset[album_id]["description"])
-        print "owner : {0}".format(self.photoset[album_id]["owner"])
-        print "primary : {0}".format(self.photoset[album_id]["primary"])
-        print "secret : {0}".format(self.photoset[album_id]["secret"])
-        print "server : {0}".format(self.photoset[album_id]["server"])
-        print "farm : {0}".format(self.photoset[album_id]["farm"])
-        print "photos : {0}".format(self.photoset[album_id]["photos"])
-        print "videos : {0}".format(self.photoset[album_id]["count_videos"])
-        print "views : {0}".format(self.photoset[album_id]["count_views"])
-        print "comments : {0}".format(self.photoset[album_id]["count_comments"])
+                print u"description : {0}".format(self.photoset[album_id]["description"])
+                print "owner : {0}".format(self.photoset[album_id]["owner"])
+                print "primary : {0}".format(self.photoset[album_id]["primary"])
+                print "secret : {0}".format(self.photoset[album_id]["secret"])
+                print "server : {0}".format(self.photoset[album_id]["server"])
+                print "farm : {0}".format(self.photoset[album_id]["farm"])
+                print "photos : {0}".format(self.photoset[album_id]["photos"])
+                print "videos : {0}".format(self.photoset[album_id]["count_videos"])
+                print "views : {0}".format(self.photoset[album_id]["count_views"])
+                print "comments : {0}".format(self.photoset[album_id]["count_comments"])
 
     def get_photos_list(self, album_id):
         auth = OAuth1(self.api_key, self.secret_key,
@@ -295,7 +295,7 @@ def sort_album(list_album, way, ad):
     elif way == "title":
         sorted_list = sorted(list_album, key=lambda album: album["album_title"],
                 reverse=ad)
-    elif way == "view_count":
+    elif way == "views_count":
         sorted_list = sorted(list_album, key=lambda album: album["view_count"], reverse=ad)
     elif way == "update_date":
         sorted_list = sorted(list_album, key=lambda album: album["update_date"],
@@ -323,6 +323,17 @@ access_url = 'https://api.flickr.com/services/rest/'
 callback_uri = 'oob'
 
 if __name__ == '__main__' :
+    # Input Sort Key
+    print "len(sys.argv) : {0}".format(len(sys.argv))
+    if len(sys.argv) != 2:
+        print "Usage: {0} {1} {2}".format("python2",
+                "flickr_album_sort.py", "{sort key}")
+        exit()
+    elif len(sys.argv) == 2:
+        #id,title,update_date,create_date,views,tag
+        sort_key = sys.argv[1] or ""
+        print "[sort_key] : {0}".format(sort_key)
+
     # get access token
     access_token = oauth_requests()
     resource_owner_key = access_token.get('oauth_token')
@@ -358,61 +369,63 @@ if __name__ == '__main__' :
         #my_albums.print_photos_list(album_id)
         #photo_id = my_albums.photos_list[album_id][0]
 
-        ### Tag case
-        photo_id = my_albums.photoset[album_id]["primary_photo_id"]
-        album_tag = my_albums.get_photo_tag(photo_id)
-        photo_list.append({
-            'album_id' : album_id,
-            'album_tag' : album_tag,
-            })
-
-        ### id case
-        #photo_list.append({
-        #	'album_id' : album_id,
-        #	'album_idx' : album_id,
-        #	})
-
-        ### Title case
-        #album_title = my_albums.photoset[album_id]["title"]
-        #photo_list.append({
-        #	'album_id' : album_id,
-        #	'album_title' : album_title,
-        #	})
-
-        ### view case
-        #view_count = my_albums.photoset[album_id]["views_count"]
-        #photo_list.append({
-        #	'album_id' : album_id,
-        #	'view_count' : view_count,
-        #	})
-
-        ### date update case
-        #update_date = my_albums.photoset[album_id]["update_date"]
-        #photo_list.append({
-        #	'album_id' : album_id,
-        #	'update_date' : update_date,
-        #	})
-
-        ### date create case
-        #create_date = my_albums.photoset[album_id]["create_date"]
-        #photo_list.append({
-        #	'album_id' : album_id,
-        #	'create_date' : create_date,
-        #	})
+        if sort_key == "id":
+            ### id case
+            photo_list.append({
+               'album_id' : album_id,
+               'album_idx' : album_id,
+               })
+        elif sort_key == "title":
+            ### Title case
+            album_title = my_albums.photoset[album_id]["title"]
+            photo_list.append({
+                'album_id' : album_id,
+                'album_title' : album_title,
+                })
+        elif sort_key == "update_date":
+            ### date update case
+            update_date = my_albums.photoset[album_id]["update_date"]
+            photo_list.append({
+                'album_id' : album_id,
+                'update_date' : update_date,
+                })
+        elif sort_key == "create_date":
+            ### date create case
+            create_date = my_albums.photoset[album_id]["create_date"]
+            photo_list.append({
+                'album_id' : album_id,
+                'create_date' : create_date,
+                })
+        elif sort_key == "views_count":
+            ### view case
+            view_count = my_albums.photoset[album_id]["views_count"]
+            photo_list.append({
+                'album_id' : album_id,
+                'view_count' : view_count,
+                })
+        elif sort_key == "tag":
+            ### Tag case
+            photo_id = my_albums.photoset[album_id]["primary_photo_id"]
+            album_tag = my_albums.get_photo_tag(photo_id)
+            photo_list.append({
+                'album_id' : album_id,
+                'album_tag' : album_tag,
+                })
+        else:
+            # No case
+            #id,title,update_date,create_date,views,tag
+            print "\n Please input sort key > {0} or {1} or {2} or {3} or {4}".format("id", "title", "update_date",
+                    "create_date", "views_count", "tag")
+            exit()
 
         loading_i += 1
 
     print ""
-    lst = sort_album(photo_list, "tag", True)
-    #lst = sort_album(photo_list, "id", False)
-    #lst = sort_album(photo_list, "title", False)
-    #lst = sort_album(photo_list, "view_count", False)
-    #lst = sort_album(photo_list, "update_date", False)
-    #lst = sort_album(photo_list, "create_date", False)
+    lst = sort_album(photo_list, sort_key, True)
 
-    # copy
+    # List copy
     ignores = MI.IGNORE_SORT_ALBUM_LIST[:]
-    # mix album list
+    # Mix album list
     mix_album_list = ignores + lst
 
     sort_ids = ',' . join([str(m) for m in mix_album_list])
