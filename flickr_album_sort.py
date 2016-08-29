@@ -337,6 +337,12 @@ if __name__ == '__main__' :
         #id,title,update_date,create_date,views,tag
         sort_key = sys.argv[1] or ""
 
+    enable_sort_keys = ("id", "title", "update_date",
+            "create_date", "views_count", "tag")
+    if not (sort_key in enable_sort_keys):
+        print "[Bat sort key]: {0}".format(sort_key)
+        print "Program exit"
+        exit()
     print "[sort] > {0}".format(sort_key)
     # get access token
     access_token = oauth_requests()
