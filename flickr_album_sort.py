@@ -324,16 +324,20 @@ callback_uri = 'oob'
 
 if __name__ == '__main__' :
     # Input Sort Key
-    print "len(sys.argv) : {0}".format(len(sys.argv))
     if len(sys.argv) != 2:
         print "Usage: {0} {1} {2}".format("python2",
                 "flickr_album_sort.py", "{sort key}")
-        exit()
+        # print prompt
+        print "sort ? {0} {1} {2} {3} {4} {5} or {6}".format("id", "title",
+        "update_date", "create_date", "views_count", "tag", "exit")
+        sort_key = raw_input("[sort_key]>")
+        if sort_key == "exit":
+            exit()
     elif len(sys.argv) == 2:
         #id,title,update_date,create_date,views,tag
         sort_key = sys.argv[1] or ""
-        print "[sort_key] : {0}".format(sort_key)
 
+    print "[sort] > {0}".format(sort_key)
     # get access token
     access_token = oauth_requests()
     resource_owner_key = access_token.get('oauth_token')
