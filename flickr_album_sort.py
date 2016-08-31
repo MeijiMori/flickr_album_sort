@@ -53,36 +53,6 @@ class baseinfo():
         self.user_id = user_id
         self.api_url = 'https://api.flickr.com/services/rest/'
 
-class user(baseinfo):
-
-    def get_user_info(self):
-        method = "method=flickr.people.getInfo"
-        res_format = "format=rest"
-        req_str = self.api_url + "?" + method + "&" + self.api_key + "&" + user_id + "&" + res_format
-        request = urllib2.Request(req_str)
-        response = urllib2.urlopen(request)
-        res_data = response.read()
-        #print res_data
-        elem = ET.fromstring(res_data)
-        self.username = elem.findtext(".//username")
-        self.description = elem.findtext(".//description")
-        self.photosurl = elem.findtext(".//photosurl")
-        self.profileurl = elem.findtext(".//profileurl")
-        self.mobileurl = elem.findtext(".//mobileurl")
-        self.firstdatetaken = elem.findtext(".//firstdatetaken")
-        self.firstdate = elem.findtext(".//firstdate")
-        self.count = elem.findtext(".//count")
-
-    def print_user_data(self):
-        print u"username : {0}".format(self.username)
-        print u"description : {0}".format(self.description)
-        print u"photosurl : {0}".format(self.photosurl)
-        print u"profileurl : {0}".format(self.profileurl)
-        print u"mobileurl : {0}".format(self.mobileurl)
-        print u"firstdatetaken : {0}".format(self.firstdatetaken)
-        print u"firstdate : {0}".format(self.firstdate)
-        print u"count : {0}".format(self.count)
-
 
 class albums(baseinfo):
 
