@@ -294,18 +294,42 @@ callback_uri = 'oob'
 
 if __name__ == '__main__' :
     # Input Sort Key
-    if len(sys.argv) != 2:
-        print "Usage: {0} {1} {2}".format("python2",
-                "flickr_album_sort.py", "{sort key}")
+    if len(sys.argv) != 3:
+        print "Usage: {0} {1} {2} {3}".format("python2",
+                "flickr_album_sort.py", "{sort key}", "{sort_up/down}")
         # print prompt
         print "sort ? {0} {1} {2} {3} {4} {5} or {6}".format("id", "title",
         "update_date", "create_date", "views_count", "tag", "exit")
         sort_key = raw_input("[sort_key]>")
         if sort_key == "exit":
             exit()
-    elif len(sys.argv) == 2:
-        #id,title,update_date,create_date,views,tag
-        sort_key = sys.argv[1] or ""
+        # default sort ascending
+        sort_reverse = False
+    elif len(sys.argv) == 3:
+        #pdb.set_trace()
+        # Analysis of the args
+        find_sort_key = False
+        find_sort_type = False
+        for cmdargs in sys.argv[1:]:
+            # id,title,update_date,create_date,views,tag
+            enable_sort_keys = ("id", "title", "update_date",
+                "create_date", "views_count", "tag")
+            enable_sort_type = ("ascending" , "descending")
+            # search sort key
+            if find_sort_key == False:
+                if (cmdargs in enable_sort_keys):
+                    sort_key = cmdargs
+                    find_sort_key = True
+                    continue
+
+            # search sort type
+            if find_sort_type == False:
+                if cmdargs == enable_sort_type[1]:
+                    sort_type = True
+                    find_sort_type = True
+                    continue
+                else:
+                    sort_type = False
 
     enable_sort_keys = ("id", "title", "update_date",
             "create_date", "views_count", "tag")
@@ -313,7 +337,11 @@ if __name__ == '__main__' :
         print "[Bat sort key]: {0}".format(sort_key)
         print "Program exit"
         exit()
-    print "[sort] > {0}".format(sort_key)
+
+    print "[sort key] > {0}".format(sort_key)
+    print "[sort type] > {0}".format(sort_type)
+
+
     # get access token
     access_token = oauth_requests()
     resource_owner_key = access_token.get('oauth_token')
@@ -401,7 +429,7 @@ if __name__ == '__main__' :
         loading_i += 1
 
     print ""
-    lst = sort_album(photo_list, sort_key, True)
+    lst = sort_album(photo_list, sort_key, sort_type)
 
     # List copy
     ignores = MI.IGNORE_SORT_ALBUM_LIST[:]
