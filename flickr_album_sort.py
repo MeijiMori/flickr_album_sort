@@ -9,6 +9,7 @@ import math
 import xml.etree.ElementTree as ET
 import urlparse
 import webbrowser
+import argparse
 import pdb
 
 import requests
@@ -294,53 +295,30 @@ callback_uri = 'oob'
 
 if __name__ == '__main__' :
     # Input Sort Key
-    if len(sys.argv) != 3:
-        print "Usage: {0} {1} {2} {3}".format("python2",
-                "flickr_album_sort.py", "{sort key}", "{sort_up/down}")
-        # print prompt
-        print "sort ? {0} {1} {2} {3} {4} {5} or {6}".format("id", "title",
-        "update_date", "create_date", "views_count", "tag", "exit")
-        sort_key = raw_input("[sort_key]>")
-        if sort_key == "exit":
-            exit()
-        # default sort ascending
-        sort_reverse = False
-    elif len(sys.argv) == 3:
-        #pdb.set_trace()
-        # Analysis of the args
-        find_sort_key = False
-        find_sort_type = False
-        for cmdargs in sys.argv[1:]:
-            # id,title,update_date,create_date,views,tag
-            enable_sort_keys = ("id", "title", "update_date",
-                "create_date", "views_count", "tag")
-            enable_sort_type = ("ascending" , "descending")
-            # search sort key
-            if find_sort_key == False:
-                if (cmdargs in enable_sort_keys):
-                    sort_key = cmdargs
-                    find_sort_key = True
-                    continue
-
-            # search sort type
-            if find_sort_type == False:
-                if cmdargs == enable_sort_type[1]:
-                    sort_type = True
-                    find_sort_type = True
-                    continue
-                else:
-                    sort_type = False
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("sort_key", 
+            type=str,
+            help="What to sort by album's [ id, title, update_date," + \
+                    "create_date, views_count, tag ]")
+    parser.add_argument("-d", "--descending",
+            help="Descending order of sort",
+            action="store_true")
+    args = parser.parse_args()
+    # id,title,update_date,create_date,views,tag
     enable_sort_keys = ("id", "title", "update_date",
-            "create_date", "views_count", "tag")
-    if not (sort_key in enable_sort_keys):
-        print "[Bat sort key]: {0}".format(sort_key)
-        print "Program exit"
+        "create_date", "views_count", "tag")
+    if not(args.sort_key in enable_sort_keys):
+        # bad sort key
+        print "Bad sort key : {0}".format(args.sort_key)
+        print "You need to input id, title, update_date, create_date," + \
+              "views_count or tag"
         exit()
 
-    print "[sort key] > {0}".format(sort_key)
-    print "[sort type] > {0}".format(sort_type)
-
+    sort_key = args.sort_key
+    sort_order = args.descending
+    print "[sort_key] > {0}".format(sort_key)
+    print "[sort_order] > {0}".format("descending" if sort_order else
+    "ascending")
 
     # get access token
     access_token = oauth_requests()
@@ -429,7 +407,7 @@ if __name__ == '__main__' :
         loading_i += 1
 
     print ""
-    lst = sort_album(photo_list, sort_key, sort_type)
+    lst = sort_album(photo_list, sort_key, sort_order)
 
     # List copy
     ignores = MI.IGNORE_SORT_ALBUM_LIST[:]
