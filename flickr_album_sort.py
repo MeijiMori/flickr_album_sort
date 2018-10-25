@@ -29,9 +29,10 @@ def oauth_requests():
     # Getting the User Authorization
     # ブラウザを開きOAuth認証確認画面を表示
     # ユーザーが許可するとPINコードが表示される
-    url='{0}?oauth_token={1}&perms=write'.format(authorize_url,  request_token['oauth_token'])
+    url = '{0}?oauth_token={1}&perms=write'.format(authorize_url,  request_token['oauth_token'])
     #print testurl
-    browser=webbrowser.get(MI.BROWSER_PATH)
+    #print MI.BROWSER_PATH
+    browser = webbrowser.get(MI.BROWSER_PATH)
     browser.open(url)
 
     oauth_verifier = raw_input("[PIN Code]> ")  # 上記PINコードを入力する
@@ -296,7 +297,7 @@ callback_uri = 'oob'
 if __name__ == '__main__' :
     # Input Sort Key
     parser = argparse.ArgumentParser()
-    parser.add_argument("sort_key", 
+    parser.add_argument("sort_key",
             type=str,
             help="What to sort by album's [ id, title, update_date," + \
                     "create_date, views_count, tag ]")
@@ -316,8 +317,8 @@ if __name__ == '__main__' :
 
     sort_key = args.sort_key
     sort_order = args.descending
-    print "[sort_key] > {0}".format(sort_key)
-    print "[sort_order] > {0}".format("descending" if sort_order else
+    print "[sort_key]> {0}".format(sort_key)
+    print "[sort_order]> {0}".format("descending" if sort_order else
     "ascending")
 
     # get access token
@@ -331,7 +332,7 @@ if __name__ == '__main__' :
             resource_owner_secret)
 
     my_albums.get_albums_list()
-    my_albums.print_albums_info()
+    #my_albums.print_albums_info()
 
     photo_list = []
     LOADING_CHAR = [ "    ", ".", ".o", ".oO", ".oO0" ]
